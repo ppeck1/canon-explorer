@@ -53,6 +53,48 @@ python run.py
 
 ---
 
+## Screenshots
+
+### Binary — Rule 110
+
+Rule 110 is the only elementary CA proven capable of universal computation. The spacetime strip reads top-to-bottom: each row is one generation, the current generation at the bottom. Complex, non-repeating structure emerges from a single live cell seeded at centre.
+
+![Binary mode — Rule 110 spacetime strip](screenshots/cax_binary_1.png)
+
+The triangular structures are Rule 110's signature: deterministic yet never periodic, never fully chaotic. The asymmetric propagation (the rule treats left and right neighbours differently) produces the diagonal lean visible in all runs. The RADIAL panel in the sidebar shows the spatial distribution of live cells mapped to a polar axis; VECT shows the current generation distributed around a circle, with the tight cluster near centre reflecting the high density of a fully-developed Rule 110 spacetime strip.
+
+---
+
+### Life — Conway
+
+Conway Life runs on a 2D grid. Each cell lives or dies based on its 8-neighbour count. At default density a random seed produces gliders, oscillators, still lifes, and large ephemeral structures before settling into a stable mix.
+
+![Life mode — Conway 2D grid](screenshots/cax_life_1.png)
+
+The RADIAL panel here has filled almost entirely red — sustained high positive-polarity density across the full spatial window, consistent with a grid that has passed its explosive initial phase and stabilised into oscillators. The X_S Belief spider chart shows the system reading primarily as "ordered" and "periodic", which matches: most of what survives the initial chaos is periodic structure.
+
+---
+
+### Trinary — 3-State CA
+
+The trinary engine implements the shed / contain / reinforce semantics directly. State 0 (grey) is load-bearing containment — not absence. State 1 (green) is active reinforcement. State 2 (red) is shedding. The spacetime strip reads the same way as binary: time flows downward.
+
+![Trinary mode — spacetime strip](screenshots/cax_trinary_1.png)
+
+The trinary CA produces long diagonal structures similar to binary rules but with a third state capable of damming or routing propagating waves. The trinary-specific coloring (grey/green/red) is most visible in the sidebar panels — particularly X_S Belief and RADIAL — which reflect the system's interpretation of its own state distribution across the shed/contain/reinforce categories.
+
+---
+
+### Wire — Wireworld
+
+Wireworld shows the lifecycle of electron signals through a circuit. Dark blue-grey = static wire. Bright yellow = electron head (active signal front). Orange = electron tail (one step behind the head, decaying back to wire). Black = empty space.
+
+![Wire mode — electron propagation spacetime](screenshots/cax_wire_1.png)
+
+The vertical striping is the wire lattice — static, grey-blue. The diagonal yellow-orange streaks are electron head/tail pairs propagating through the wire. Each streak is one electron: the head leads, the tail follows one generation behind, then collapses back to wire. The VECT panel shows the electron heads as a sparse scatter of bright dots around the circular display, reflecting the low but active density of signals in a mostly-wire grid. Left-click injects a new electron head; right-click draws additional wire.
+
+---
+
 ## Multi-System Operation
 
 CA Explorer runs up to **6 independent systems simultaneously**. Each system has its own mode, rule, color, and CANON state. They can be coupled to interact.
@@ -70,13 +112,11 @@ CA Explorer runs up to **6 independent systems simultaneously**. Each system has
 
 **Side-by-side (default):** Each system gets its own column. Interaction is visible as each system evolves under its own rules plus any coupling.
 
-**Overlay (collision chamber):** All systems render to the same surface. This is the right mode for studying how two or more systems with different rules occupy the same space. Use when you want to see interference, not comparison.
+**Overlay (collision chamber):** All systems render to the same surface. Use when you want to study interference directly — what happens when two rule grammars occupy the same spatial field simultaneously.
 
 ### System Coupling
 
-The **COUP** slider sets how much each system's state bleeds into the others. At 0, systems run in complete isolation. At 1, they are strongly coupled and will influence each other's evolution. Coupling is directional (every system pushes to every other), governed by the `CouplingMatrix` in the simulation core.
-
-You can also inject directly from one system into another by clicking within that system's column viewport.
+The **COUP** slider sets how much each system's state bleeds into the others. At 0, systems are fully isolated. At 1, they are strongly coupled and each will influence the other's evolution. Coupling is directional (every system pushes to every other), governed by the `CouplingMatrix` in the simulation core.
 
 ---
 
@@ -106,7 +146,7 @@ You can also inject directly from one system into another by clicking within tha
 | Click and drag | Paint continuously |
 | Scroll on time dial | Adjust simulation speed |
 | Drag time dial centre | Move dial anywhere on screen |
-| Click panel title | Collapse / expand that sidebar panel |
+| Click panel title | Collapse / expand that panel |
 | Click ⟳ on panel | Cycle to next view in that panel |
 | Drag panel bottom edge | Resize that panel |
 | Drag sidebar left edge | Resize the whole sidebar |
@@ -116,7 +156,7 @@ You can also inject directly from one system into another by clicking within tha
 
 ## Settings Panel
 
-Toggle with **S** or the **settings** button. Contains sliders that apply to the currently selected system.
+Toggle with **S** or the **settings** button. Applies to the currently selected system.
 
 | Slider | Range | Effect |
 |---|---|---|
@@ -130,95 +170,87 @@ Toggle with **S** or the **settings** button. Contains sliders that apply to the
 
 ## Time Dial
 
-The circular dial in the top area controls simulation speed (0.1× – 100×, logarithmic).
+Circular speed control (0.1× – 100×, logarithmic).
 
 - **Drag the needle** (outer arc): adjust speed
-- **Drag the centre hub**: move the dial anywhere
+- **Drag the centre hub**: move the dial anywhere on screen
 - **Scroll while hovering**: fine speed adjustment
 
-Speed is logarithmically spaced. The arc colour shifts from red (slow) to green (fast) proportional to the log-speed position.
+Arc colour shifts red → green from slow to fast.
 
 ---
 
 ## Sidebar Views
 
-The right sidebar contains panels. Each panel can show any view — click **⟳** to cycle through them. Panels can be collapsed, resized, and the sidebar itself can be dragged narrower or wider.
+Each panel can show any view — click **⟳** to cycle. Panels collapse, resize by dragging their bottom edge. The full sidebar resizes by dragging its left edge.
 
-### Physical Plane (P) — what the CA is doing
+### Physical Plane (P)
 
 | View | Description |
 |---|---|
-| **cells** | Raw cell state as a horizontal colour bar |
-| **lattice** | Cell state overlaid with constraint boundary indicators |
-| **spacetime** | Time × space strip (the canonical CA view) |
+| **cells** | Raw cell state as a horizontal bar |
+| **lattice** | Cell state with constraint boundary overlay |
+| **spacetime** | Time × space strip — the canonical CA view |
 | **scope** | Oscilloscope waveform of the current generation |
-| **radial** | Time-collapsed polar cross-section — recent history mapped to a circle |
-| **vect** | Vectorscope — cell state plotted radially around a circle, trails included |
-| **transverse** | End-on cross-section view — concentric rings coloured by spatial zone activity |
+| **radial** | Time-collapsed polar cross-section |
+| **vect** | Vectorscope: cell state plotted radially, with trail |
+| **transverse** | End-on cross-section: concentric rings by spatial zone |
 
-### Informational Plane (I) — pattern structure
+### Informational Plane (I)
 
 | View | Description |
 |---|---|
-| **structure** | FFT pattern fingerprint — spatial frequency spectrum as a bar chart |
-| **rule** | Rule table heatmap for the current CA |
+| **structure** | FFT pattern spectrum as a bar chart |
+| **rule** | Rule table heatmap |
 | **dynamic** | Pattern variance over time |
 
-### Subjective Plane (S) — interpretation distribution
+### Subjective Plane (S)
 
 | View | Description |
 |---|---|
-| **belief** | Radial belief chart across 8 interpretation categories |
-| **interpretation** | Belief constraint boundaries as horizontal gauges |
-| **meaning** | Belief distribution evolution (stacked area) |
+| **belief** | Radial belief chart (8 interpretation categories) |
+| **interpretation** | Belief constraint boundaries as gauges |
+| **meaning** | Belief distribution evolution over time |
 
-### CANON Diagnostics — viability tracking
+### CANON Diagnostics
 
 | View | Description |
 |---|---|
-| **viability** | ΩV — distance to infeasibility, over time |
+| **viability** | ΩV — distance to infeasibility over time |
 | **collapse** | Δc* — projected collapse margin |
-| **history** | H — accumulated coupling residue (history load) |
-| **projection_loss** | L_P — information destroyed by constraint projection |
+| **history** | H — accumulated coupling residue |
+| **projection_loss** | L_P — information destroyed by Π_K |
 | **canon_dashboard** | All 7 CANON metrics as vertical bars |
-| **coupling** | P↔I↔S influence network diagram |
-| **waveform** | 5 orthogonal diagnostic channels: v(t) E(t) H(t) B(t) D(t) |
+| **coupling** | P↔I↔S influence network |
+| **waveform** | 5 orthogonal diagnostic channels |
 
-### The WAVEFORM View (accurate signal analysis)
+### The WAVEFORM View
 
-Five *lawful* projections of the pattern manifold — each measures something real:
+Five lawful projections of the pattern manifold — each measures something the others cannot:
 
-| Channel | What it measures |
-|---|---|
-| **v(t)** | Trajectory velocity — how fast the system state is moving |
-| **E(t)** | Transition energy — fraction of cells that changed this step |
-| **H(t)** | Novelty entropy — windowed Shannon entropy of the physical state |
-| **B(t)** | Boundary proximity — ΩV, distance from infeasibility |
-| **D(t)** | Attractor dwell — how long the system has been near a stable state |
-
-These are orthogonal projections: each tells you something the others cannot. Together they form a complete diagnostic waveform.
+| Channel | Measures | Use when asking |
+|---|---|---|
+| **v(t)** | Trajectory velocity | Is the system moving fast or slow? |
+| **E(t)** | Transition energy | How much work is it doing this step? |
+| **H(t)** | Novelty entropy | Is it exploring or repeating? |
+| **B(t)** | Boundary proximity (ΩV) | Is it near collapse? |
+| **D(t)** | Attractor dwell | Is it stuck or coasting? |
 
 ---
 
 ## Presets
 
-Five built-in presets accessible from the IO module:
-
 | Preset | Mode | Description |
 |---|---|---|
 | `bacterial_lifecycle` | life | Conway Life at 35% density |
-| `empire_collapse` | binary | Rule 110 — complex civilisation dynamics |
-| `musical_composition` | trinary | Trinary CA — harmonic progression analogue |
+| `empire_collapse` | binary | Rule 110 — complex dynamics |
+| `musical_composition` | trinary | Trinary harmonic progression analogue |
 | `stable_system` | binary | Rule 4 — low entropy baseline |
 | `hidden_failure` | binary | Rule 30 — chaotic, unpredictable collapse |
 
 ---
 
 ## Exporting Data
-
-### Book of Holding Format
-
-Export the full 9D trajectory as JSON for external visualization:
 
 ```python
 from src.io import BookOfHoldingExport
@@ -230,13 +262,11 @@ exporter.export_trajectory(
 )
 ```
 
-Each timestep in the export contains K, X, F for all three planes plus the full CANON state vector.
+Each timestep exports K, X, F for all three planes plus the full CANON state vector.
 
 ---
 
 ## Themes
-
-Four built-in color themes, toggled with **T** or the theme buttons:
 
 | Theme | Character |
 |---|---|
@@ -247,56 +277,56 @@ Four built-in color themes, toggled with **T** or the theme buttons:
 
 ---
 
-## Architecture Overview
+## Architecture
 
 ```
 ca_explorer_v11/
-├── run.py                          Entry point
+├── run.py
 ├── src/
 │   ├── core/
-│   │   ├── substrate_lattice.py    9D coordinate system (K, X, F × P, I, S)
-│   │   ├── canon_operators.py      Viability math (ΩV, Δc*, Π, H, L_P, Γ, T)
-│   │   ├── ca_engines.py           Four CA engines (F operators)
-│   │   ├── integration.py          CA → Substrate → CANON unified step
-│   │   └── system_manager.py       Multi-system + coupling matrix
+│   │   ├── substrate_lattice.py    9D coordinate system
+│   │   ├── canon_operators.py      Viability math
+│   │   ├── ca_engines.py           Four CA engines
+│   │   ├── integration.py          Unified step loop
+│   │   └── system_manager.py       Multi-system + coupling
 │   ├── visualization/
-│   │   ├── colors.py               4 themes × 3 plane palettes
-│   │   ├── view_registry.py        Abstract ViewRenderer base
+│   │   ├── colors.py               4 themes × 3 palettes
+│   │   ├── view_registry.py        ViewRenderer base
 │   │   ├── physical_views.py       P-plane views
 │   │   ├── informational_views.py  I-plane views
 │   │   ├── canon_views.py          CANON + coupling views
 │   │   └── scope_views.py          SCOPE, RADIAL, VECT, TRANSVERSE, WAVEFORM
 │   ├── ui/
-│   │   ├── application.py          Main application loop
-│   │   ├── multi_viewport.py       N-system rendering (side-by-side / overlay)
-│   │   ├── system_strip.py         System tab strip UI
-│   │   ├── docking_system.py       Collapsible/resizable sidebar panels
-│   │   ├── control_panel.py        Mode/theme/seed/pause controls
-│   │   ├── settings_panel.py       RULE/THR/COUP/INERT/PULSE_R sliders
-│   │   └── time_dial.py            Circular speed control (draggable)
-│   ├── analytics/                  Entropy, FFT, curvature diagnostics
-│   └── io/                         Presets, Book of Holding export
+│   │   ├── application.py          Main loop
+│   │   ├── multi_viewport.py       N-system rendering
+│   │   ├── system_strip.py         System tab strip
+│   │   ├── docking_system.py       Sidebar panels
+│   │   ├── control_panel.py        Controls
+│   │   ├── settings_panel.py       Sliders
+│   │   └── time_dial.py            Speed dial
+│   └── io/                         Presets, export
 └── tests/
-    └── test_full.py                59 tests across all phases
+    └── test_full.py                59 tests
 ```
 
 ---
 
-## Key Bindings Reference Card
+## Quick Reference
 
 ```
-SIMULATION          SYSTEMS              DISPLAY
-Space  pause        =      add system    T    cycle theme
-→      step once    1–6    select        O    toggle overlay
-R      reseed (c)   S      settings      S    toggle settings
-D      reseed (r)
+SIMULATION        SYSTEMS            DISPLAY
+Space  pause      =    add system    T   theme
+→      step       1–6  select        O   overlay
+R      reseed(c)  S    settings
+D      reseed(r)
 
-DIAL                SIDEBAR              INJECTION
-scroll  speed±      drag bottom  resize  LMB   paint/inject
-drag    move        drag left    resize  RMB   erase/wire
-                    ⟳ button     view    drag  continuous
+DIAL              SIDEBAR            INJECT
+scroll  speed±    drag bottom  ↕     LMB  paint
+drag    move      drag left    ↔     RMB  erase
+                  ⟳ button  view    drag  continuous
 ```
 
 ---
 
-*CA Explorer is part of the Substrate Canon ecosystem. See the whitepaper for theoretical foundations.*
+*See CA_Explorer_Whitepaper.md for theoretical foundations.*
+

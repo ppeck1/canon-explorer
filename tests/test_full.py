@@ -516,3 +516,184 @@ if __name__ == "__main__":
 
     result = pytest.main([__file__, "-v", "--tb=short"])
     sys.exit(result)
+
+
+# ===========================================================================
+# PHASE 5: UX v2 — new modules
+# ===========================================================================
+
+class TestDockingSystemV2:
+    def _init_pygame(self):
+        import os
+        os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+        os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+        import pygame
+        pygame.init()
+        pygame.display.set_mode((1, 1))
+
+    def test_collapse_toggle_restores_height(self):
+        self._init_pygame()
+        import pygame
+        from src.ui.docking_system import DockPanel
+        p = DockPanel(pygame.Rect(0, 0, 200, 150), "cells",
+                      natural_height=150)
+        assert not p.collapsed
+        p.toggle_collapse()
+        assert p.collapsed
+        assert p.rect.height == 22  # TITLE_H
+        p.toggle_collapse()
+        assert not p.collapsed
+        assert p.rect.height == 150   # restored
+
+    def test_dock_layout_reflow_after_collapse(self):
+        self._init_pygame()
+        import pygame
+        from src.ui.docking_system import DockLayout, TITLE_H
+        from src.visualization.colors import get_theme
+        r = pygame.Rect(0, 0, 280, 800)
+        layout = DockLayout(r, get_theme("dark"))
+        layout.add_panel("cells",     height=120)
+        layout.add_panel("viability", height=100)
+        p0 = layout.panels[0]
+        p0.toggle_collapse()
+        layout.reflow()
+        assert p0.rect.height == TITLE_H
+        assert layout.panels[1].rect.top == (TITLE_H + 2)  # right after collapsed p0
+
+    def test_dock_scroll(self):
+        self._init_pygame()
+        import pygame
+        from src.ui.docking_system import DockLayout
+        from src.visualization.colors import get_theme
+        r = pygame.Rect(0, 0, 280, 200)
+        layout = DockLayout(r, get_theme("dark"))
+        for view in ["cells", "viability", "history", "belief", "structure"]:
+            layout.add_panel(view, height=100)
+        layout.reflow()
+        assert layout._total_h() > 200   # should overflow
+
+
+class TestSettingsPanel:
+    def _init_pygame(self):
+        import os
+        os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+        os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+        import pygame
+        pygame.init()
+        pygame.display.set_mode((1, 1))
+
+    def test_settings_initial_values(self):
+        self._init_pygame()
+        import pygame
+        from src.ui.settings_panel import SettingsPanel
+        from src.visualization.colors import get_theme
+        sp = SettingsPanel(pygame.Rect(0, 0, 800, 72), get_theme("dark"))
+        assert sp.get("RULE") == 110.0
+        assert sp.get("THR")  == 1.20
+        assert sp.get("COUP") == 1.00
+        assert sp.get("INERT") == 0.25
+        assert sp.get("PULSE_R") == 3.0
+
+    def test_settings_set_get(self):
+        self._init_pygame()
+        import pygame
+        from src.ui.settings_panel import SettingsPanel
+        from src.visualization.colors import get_theme
+        sp = SettingsPanel(pygame.Rect(0, 0, 800, 72), get_theme("dark"))
+        sp.set("RULE", 30.0)
+        assert sp.get("RULE") == 30.0
+
+    def test_settings_callback(self):
+        self._init_pygame()
+        import pygame
+        from src.ui.settings_panel import SettingsPanel
+        from src.visualization.colors import get_theme
+        sp   = SettingsPanel(pygame.Rect(0, 0, 800, 72), get_theme("dark"))
+        got  = []
+        sp.callbacks["RULE"] = lambda v: got.append(v)
+        sp.set("RULE", 42.0)
+        # Callback fires when slider is dragged via event; set() only updates value
+        assert sp.get("RULE") == 42.0
+
+
+class TestTimeDial:
+    def test_speed_neutral(self):
+        from src.ui.time_dial import TimeDial
+        d = TimeDial(100, 100)
+        d.speed = 1.0
+        assert abs(d.speed - 1.0) < 0.01
+
+    def test_speed_range(self):
+        from src.ui.time_dial import TimeDial
+        d = TimeDial(100, 100)
+        d.speed = 0.1
+        assert d.speed >= 0.09
+        d.speed = 100.0
+        assert d.speed <= 100.1
+
+    def test_speed_clamp(self):
+        from src.ui.time_dial import TimeDial
+        d = TimeDial(100, 100)
+        d.speed = 999.0
+        assert d.speed <= TimeDial.MAX_SPEED
+
+    def test_drag_moves_dial(self):
+        import os
+        os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+        os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+        import pygame
+        pygame.init()
+        pygame.display.set_mode((1, 1))
+        from src.ui.time_dial import TimeDial
+        d  = TimeDial(200, 200)
+        ev = pygame.event.Event(pygame.MOUSEBUTTONDOWN,
+                                {'button': 1, 'pos': (200, 200)})
+        d.handle_event(ev)
+        assert d._dragging_body
+
+        ev2 = pygame.event.Event(pygame.MOUSEMOTION,
+                                 {'pos': (300, 200), 'buttons': (1,0,0)})
+        d.handle_event(ev2)
+        assert d.cx == 300 - 0   # offset was (0, 0) from centre click
+
+
+class TestOrthogonalSystem:
+    def test_injection_additive(self):
+        from src.ui.orthogonal_system import apply_injection
+        from src.core.ca_engines import BinaryEngine
+        e = BinaryEngine(width=100)
+        e.grid[:] = 0
+        src = np.ones(20, dtype=np.uint8)
+        apply_injection(e, 0.5, "additive", src, 1.0)
+        assert e.grid[50] == 1
+
+    def test_injection_xor(self):
+        from src.ui.orthogonal_system import apply_injection
+        from src.core.ca_engines import BinaryEngine
+        e = BinaryEngine(width=100)
+        e.grid[:] = 1
+        src = np.ones(20, dtype=np.uint8)
+        apply_injection(e, 0.5, "xor", src, 1.0)
+        # XOR 1 ^ 1 = 0
+        assert e.grid[50] == 0
+
+    def test_ortho_engine_steps(self):
+        from src.ui.orthogonal_system import OrthogonalSystem
+        o = OrthogonalSystem(width=60)
+        o.enabled = True
+        fired = []
+        o.on_inject = lambda pos, mode, grid, strength: fired.append(1)
+        o.inject_rate = 1.0   # always inject
+        for _ in range(10):
+            o.step(0.1, 5.0)
+        assert len(fired) > 0
+
+    def test_inject_pulse_wire(self):
+        from src.ui.orthogonal_system import apply_injection
+        from src.core.ca_engines import WireEngine
+        e = WireEngine(width=100)
+        e.grid[40:60] = e.WIRE
+        src = np.ones(10, dtype=np.uint8)
+        apply_injection(e, 0.5, "pulse", src, 1.0)
+        # Some cells should have become HEAD
+        assert (e.grid == e.HEAD).any()

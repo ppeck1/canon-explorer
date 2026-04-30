@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "ca-explorer"
+version = "11.0.0a1"
+description = "CA Explorer — Substrate Lattice + CANON viability analysis"
+requires-python = ">=3.9"
+dependencies = [
+    "pygame>=2.1.0",
+    "numpy>=1.21.0",
+    "scipy>=1.7.0",
+]
+
+[project.scripts]
+ca-explorer = "src.ui.application:main"

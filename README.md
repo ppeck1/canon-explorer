@@ -6,13 +6,19 @@
 **Author:** Paul Tobin Peck  
 **Framework:** Scalar-3³ Persistence Architecture
 
+**Experimental simulation lab.** CANON metrics here are model-defined quantities
+computed from cellular automata. They have not been empirically validated as
+warnings of failure in hospitals, organizations, or other real-world systems.
+Presets and screenshots illustrate chosen simulation rules, not measured
+operational outcomes.
+
 ---
 
 ## What This Is
 
 CA Explorer is an interactive instrument for studying how systems persist, fail, and interact under constraint. It is not a toy or a screensaver.
 
-The program runs one or more cellular automata simultaneously, maps each one into a 9-dimensional coordinate system called the **Substrate Lattice**, and computes **CANON viability metrics** in real time — telling you not just what the system is doing, but how close it is to collapse and why.
+The program runs one or more cellular automata simultaneously, maps each one into a 9-dimensional coordinate system called the **Substrate Lattice**, and computes **CANON viability metrics** in real time. These expose behavior relative to the simulation's chosen constraints; their interpretation outside the simulation remains a research question.
 
 The foundational equation governing every system in this program:
 
@@ -328,5 +334,5 @@ drag    move      drag left    ↔     RMB  erase
 
 ---
 
-*See CA_Explorer_Whitepaper.md for theoretical foundations.*
+*See [Whitepaper.md](Whitepaper.md) for theoretical foundations.*
 
